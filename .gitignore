@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+dengue-laos.Rproj
+*.DS_Store
+data_gitignored/
