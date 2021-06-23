@@ -13,6 +13,5 @@ text_checklist <- function(checklist_status, vec) {
   }
   
   text <- text[!is.na(text)]
-  
   paste(text, collapse = "</br>")
 }

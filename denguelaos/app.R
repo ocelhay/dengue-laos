@@ -37,8 +37,7 @@ ui <- fluidPage(
                         strong(icon("upload"), "Upload Data (.xlsx format)"),
                         p("For more info on data format, ", 
                           tags$a(href = "mailto:olivier.celhay@gmail.com", "contact us.")),
-                        fileInput("file_excel", label = NULL, accept = ".xlsx", buttonLabel = "Browse..."),
-                        htmlOutput("checklist_data")
+                        fileInput("file_excel", label = NULL, accept = ".xlsx", buttonLabel = "Browse...")
                ),
                
                tabPanel(i18n$t("Epidemic Trends"), value = "epidemic_trends",
@@ -66,11 +65,25 @@ server <- function(input, output, session) {
     
     observeEvent(input$file_excel, {
         source("./www/R/read_file.R", local = TRUE)
+        
+        showModal(modalDialog(
+            title = "Reading file and checking file quality.", footer = modalButton("Okay"), size = "l",
+            div(
+                htmlOutput("checklist_data"),
+                br(),
+                htmlOutput("checklist_data_summary")
+            )
+        ))
+        
+        if(data_summary$status == "okay") {
+            showTab(inputId = "tabs", target = "epidemic_trends")
+        }
     })
     
     
     # Reactive data management ----
     checklist_status <- reactiveValues()
+    data_summary <- reactiveValues(status = "okay")
     
     # misc ----
     file_list <- list.files(path = "./www/R/outputs", pattern = "*.R", recursive = TRUE)
