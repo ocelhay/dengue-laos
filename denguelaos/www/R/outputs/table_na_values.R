@@ -1,5 +1,5 @@
 output$table_na_values <- DT::renderDataTable({
-  req(dengue_dta())
+  req(dengue_dta_with_na())
   
   count_na <- c(names(dengue_dta()[, 1:10]), "pcr_serortype_result")
   
@@ -13,6 +13,6 @@ output$table_na_values <- DT::renderDataTable({
   datatable(dta,
             rownames = FALSE,
             filter = "none",
-            # style = "bootstrap",
             options = list(scrollX = TRUE, scrollY = 300, paging = FALSE, dom = "lrtip"))
 })
+  

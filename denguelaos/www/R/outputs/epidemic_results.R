@@ -1,5 +1,6 @@
 output$epidemic_ts <- renderHighchart({
   req(dengue_dta_filt())
+  req(dengue_dta_filt() %>% nrow() >= 1)
   
   heuristic_unit <- heuristic_time_unit(dengue_dta_filt()$collected_date_dd_mm_yy)
   

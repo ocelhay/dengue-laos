@@ -17,15 +17,17 @@ ui <- fluidPage(
                    div(id = "data-filters",
                        h4(icon("filter"), "Filter Dataset"),
                        dateRangeInput("filter_date", "Filter by collection date"),
-                       checkboxGroupInput("filter_age", "Filter by age categories", inline = TRUE, 
+                       checkboxGroupInput("filter_age", "Age Categories", inline = TRUE, 
                                           choices = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown"), 
                                           selected = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown")),
-                       checkboxGroupInput("filter_status", "Filter by case status", inline = TRUE,
+                       checkboxGroupInput("filter_gender", "Gender", inline = TRUE, 
+                                          choices = c("Male", "Female", "Unknown"),
+                                          selected = c("Male", "Female", "Unknown")),
+                       checkboxGroupInput("filter_status", "Case Status", inline = TRUE,
                                           choices = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"), 
                                           selected = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"))
                    )
                ),
-               
                tabPanel(i18n$t("Welcome"), value = "welcome",
                         actionLink("debug", "Click to call browser()"), br(),
                         
@@ -54,7 +56,7 @@ ui <- fluidPage(
                tabPanel(i18n$t("Data Management"), value = "data_management",
                         fluidRow(
                             column(2, htmlOutput("checklist_data_summary")),
-                            column(5, br(), htmlOutput("checklist_data")),
+                            column(5, strong("Import Log:"), htmlOutput("checklist_data")),
                             column(5, strong("Missing Values:"), DT::dataTableOutput("table_na_values"))
                         )
                ),
@@ -72,6 +74,7 @@ server <- function(input, output, session) {
     # Reactive data management ----
     checklist_status <- reactiveValues()
     data_summary <- reactiveValues(status = "okay")
+    dengue_dta_with_na <- reactiveVal()
     dengue_dta <- reactiveVal()
     
     # Filter the dataset based on UI
@@ -80,6 +83,7 @@ server <- function(input, output, session) {
             collected_date_dd_mm_yy >= input$filter_date[1],
             collected_date_dd_mm_yy <= input$filter_date[2],
             age_category %in% input$filter_age,
+            gender %in% input$filter_gender,
             dengue_virus %in% input$filter_status
         )
     })
@@ -104,6 +108,7 @@ server <- function(input, output, session) {
         source("./www/R/process_data.R", local = TRUE)
         
         showTab("tabs", target = "data_management")
+        updateTabsetPanel(session, "tabs", selected = "data_management")
         
         if(data_summary$status == "okay") {
             dengue_dta(data)

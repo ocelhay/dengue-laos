@@ -10,8 +10,7 @@ if (is_empty(ukn_ward)) {
 
 data <- left_join(data, ward, by = "ward") %>%
   select(-ward) %>%
-  rename(ward = description) %>%
-  replace_na(list(ward = "Unknown ward"))
+  rename(ward = description)
 
 # Obtain village data ----
 ukn_village <- unique(data$patient_village)[which(! unique(data$patient_village) %in% village_code$village_code)] %>%
@@ -27,8 +26,7 @@ data <- left_join(data,
                   village_code %>% 
                     select(-id, -district_code) %>%
                     mutate(village_code = as.character(village_code)), 
-                  by = c("patient_village" = "village_code")) %>%
-  replace_na(list(village = "Unknown village"))
+                  by = c("patient_village" = "village_code"))
 
 # Obtain district data ----
 ukn_district <- unique(data$patient_district)[which(! unique(data$patient_district) %in% district_code$district_code)] %>%
@@ -44,8 +42,7 @@ data <- left_join(data,
                   district_code %>% 
                     select(-id, -province_code) %>%
                     mutate(district_code = as.character(district_code)), 
-                  by = c("patient_district" = "district_code")) %>%
-  replace_na(list(district = "Unknown district"))
+                  by = c("patient_district" = "district_code"))
 
 
 # Obtain province data ----
@@ -71,17 +68,21 @@ data <- left_join(data %>%
                     mutate(patient_province = as.character(patient_province)), 
                   province_code %>% 
                     mutate(code = as.character(code)), 
-                  by = c("patient_province" = "code")) %>%
-  replace_na(list(province = "Unknown province"))
+                  by = c("patient_province" = "code"))
 
 # Age Category ----
 data <- data %>%
   mutate(age_category = case_when(
     age_in_years < 5 ~ "Under 5 y.o.",
     (age_in_years >= 5 & age_in_years < 15) ~ "5 to 15 y.o.",
-    age_in_years >= 15 ~ "Above 15 y.o.",
-    TRUE ~ "Unknown")) %>%
-  mutate(age_category = factor(age_category, levels = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown")))
+    age_in_years >= 15 ~ "Above 15 y.o."))
+
+# Gender
+data <- data %>%
+  mutate(gender = case_when(
+    gender == "M" ~ "Male",
+    gender == "F" ~ "Female"
+  ))
 
 # Dengue results ----
 data <- data %>% 
@@ -95,3 +96,8 @@ data <- data %>%
     collection_week = week(collected_date_dd_mm_yy),
     collection_day = day(collected_date_dd_mm_yy))
 
+dengue_dta_with_na(data)
+
+data <- data %>%
+  replace_na(list(province = "Unknown", district = "Unknown", village = "Unknown", ward = "Unknown",
+                  age_category = "Unkown", gender = "Unknown"))
