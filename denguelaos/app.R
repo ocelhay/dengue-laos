@@ -52,9 +52,11 @@ ui <- fluidPage(
                         )
                ),
                tabPanel(i18n$t("Data Management"), value = "data_management",
-                        htmlOutput("checklist_data"),
-                        br(),
-                        htmlOutput("checklist_data_summary")
+                        fluidRow(
+                            column(2, htmlOutput("checklist_data_summary")),
+                            column(5, br(), htmlOutput("checklist_data")),
+                            column(5, strong("Missing Values:"), DT::dataTableOutput("table_na_values"))
+                        )
                ),
                tabPanel(i18n$t("Epidemic Trends"), value = "epidemic_trends",
                         highchartOutput("epidemic_ts")
@@ -102,15 +104,6 @@ server <- function(input, output, session) {
         source("./www/R/process_data.R", local = TRUE)
         
         showTab("tabs", target = "data_management")
-
-        # showModal(modalDialog(
-        #     title = "Reading file and checking file quality.", footer = modalButton("Okay"), size = "l",
-        #     div(
-        #         htmlOutput("checklist_data"),
-        #         br(),
-        #         htmlOutput("checklist_data_summary")
-        #     )
-        # ))
         
         if(data_summary$status == "okay") {
             dengue_dta(data)

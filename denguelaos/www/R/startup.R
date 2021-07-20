@@ -1,6 +1,7 @@
 app_version <- "prototype.01"
 
 library(bslib)  # bs_theme()
+library(DT)
 library(highcharter)
 library(janitor)  # clean_names()
 library(lubridate)

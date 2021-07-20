@@ -58,6 +58,15 @@ if (is_empty(ukn_province)) {
   checklist_status$province_list <- list(status = "warning", details = paste0("The following provinces are not in the 'province code' sheet: ", 
                                                                               paste(ukn_province, collapse = ", ")))}
 
+# Check that dates are consistent
+date_onset_after_collected <- which(data$onset_date_dd_mm_yy > data$collected_date_dd_mm_yy)
+if (is_empty((date_onset_after_collected))) {
+  checklist_status$date_onset_after_collected <- list(status = "okay", details = "All dates of symptom onsets are prior or equal to the date of data collection.")
+} else {
+  checklist_status$date_onset_after_collected <- list(status = "warning", details = paste0("The date of symprom onset is posterior to the date of data collection for patient no: ",
+                                                                      paste(data[date_onset_after_collected, "no"], collapse = ", ")))
+}
+
 data <- left_join(data %>%
                     mutate(patient_province = as.character(patient_province)), 
                   province_code %>% 
