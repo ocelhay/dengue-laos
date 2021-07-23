@@ -100,4 +100,4 @@ dengue_dta_with_na(data)
 
 data <- data %>%
   replace_na(list(province = "Unknown", district = "Unknown", village = "Unknown", ward = "Unknown",
-                  age_category = "Unkown", gender = "Unknown"))
+                  age_category = "Unknown", gender = "Unknown"))

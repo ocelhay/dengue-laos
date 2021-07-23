@@ -14,18 +14,31 @@ ui <- fluidPage(
                header = conditionalPanel(
                    id = "header-filter",
                    condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
-                   div(id = "data-filters",
-                       h4(icon("filter"), "Filter Dataset"),
-                       dateRangeInput("filter_date", "Filter by collection date"),
-                       checkboxGroupInput("filter_age", "Age Categories", inline = TRUE, 
-                                          choices = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown"), 
-                                          selected = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown")),
-                       checkboxGroupInput("filter_gender", "Gender", inline = TRUE, 
-                                          choices = c("Male", "Female", "Unknown"),
-                                          selected = c("Male", "Female", "Unknown")),
-                       checkboxGroupInput("filter_status", "Case Status", inline = TRUE,
-                                          choices = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"), 
-                                          selected = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"))
+                   div(id = "filters",
+                       fluidRow(
+                           column(5,
+                                  h4(icon("filter"), "Filter Dataset"),
+                                  dateRangeInput("filter_date", "by Collection Date:"),
+                                  prettySwitch("filter_date_unknow", label = "Keep unknown dates", status = "primary", value = TRUE, slim = TRUE),
+                                  checkboxGroupInput("filter_age", "by Age Categories:", inline = TRUE, 
+                                                     choices = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown"), 
+                                                     selected = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown"))
+                           ),
+                           column(5,
+                                  br(), br(),
+                                  checkboxGroupInput("filter_gender", "by Gender:", inline = TRUE, 
+                                                     choices = c("Male", "Female", "Unknown"),
+                                                     selected = c("Male", "Female", "Unknown")),
+                                  checkboxGroupInput("filter_status", "by Case Status:", inline = TRUE,
+                                                     choices = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"), 
+                                                     selected = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"))
+                           ),
+                           column(2,
+                                  br(), br(),
+                                  gaugeOutput("filter_gauge", width = "100%", height = "100px"), br(),
+                                  textOutput("filter_gauge_text")
+                           )
+                       )
                    )
                ),
                tabPanel(i18n$t("Welcome"), value = "welcome",
@@ -61,6 +74,8 @@ ui <- fluidPage(
                         )
                ),
                tabPanel(i18n$t("Epidemic Trends"), value = "epidemic_trends",
+                        pickerInput("display_unit", label = NULL, 
+                                    choices = c("Use heuristic", "Display by month", "Display by year")),
                         highchartOutput("epidemic_ts")
                )
     )
@@ -79,6 +94,15 @@ server <- function(input, output, session) {
     
     # Filter the dataset based on UI
     dengue_dta_filt <- reactive({
+        if(input$filter_date_unknow) return(
+            dengue_dta() %>% filter(
+                is.na(collected_date_dd_mm_yy) | collected_date_dd_mm_yy >= input$filter_date[1],
+                is.na(collected_date_dd_mm_yy) | collected_date_dd_mm_yy <= input$filter_date[2],
+                age_category %in% input$filter_age,
+                gender %in% input$filter_gender,
+                dengue_virus %in% input$filter_status
+            )
+        )
         dengue_dta() %>% filter(
             collected_date_dd_mm_yy >= input$filter_date[1],
             collected_date_dd_mm_yy <= input$filter_date[2],
