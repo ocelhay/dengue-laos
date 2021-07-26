@@ -48,9 +48,8 @@ ui <- fluidPage(
                         fluidRow(
                             column(4,
                                    br(), br(),
-                                   selectInput(
-                                       inputId = 'selected_language', label = span(icon('language'), i18n$t('Language:')),
-                                       choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
+                                   selectInput('selected_language', span(icon('language'), i18n$t('Language:')),
+                                               choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
                                    ),
                                    br(), 
                                    strong(icon("upload"), "Upload Data (.xlsx format)"),
@@ -77,6 +76,41 @@ ui <- fluidPage(
                         pickerInput("display_unit", label = NULL, 
                                     choices = c("Use heuristic", "Display by month", "Display by year")),
                         highchartOutput("epidemic_ts")
+               ),
+               tabPanel(i18n$t("Patients Info"), value = "patients_info",
+                        fluidRow(
+                            column(3,
+                                   div(class = "box",
+                                       h4("Patients Gender"),
+                                       tableOutput("patients_gender_table")
+                                   )
+                            ),
+                            column(9,
+                                   div(class = "box",
+                                       h4("Patients Age"),
+                                       fluidRow(
+                                           column(4, tableOutput("patients_age_table")),
+                                           column(8, plotOutput("patients_age_plot"))
+                                       )
+                                   )
+                            )
+                        ),
+                        div(class = "box",
+                            h4("Origin of Patients"),
+                            fluidRow(
+                                column(4, 
+                                       selectInput("selected_geo_level", "Geo Level:",
+                                                   choices = c("Province", "District", "Village"), selected = "Province", width = "150px"
+                                       ),
+                                       tableOutput("patients_origin_table")
+                                ),
+                                column(8, 
+                                       leafletOutput("patients_origin_map")
+                                )
+                            )
+                        )
+               ),
+               tabPanel(i18n$t("Dengue Virus"), value = "dengue_virus",
                )
     )
 )
@@ -115,6 +149,8 @@ server <- function(input, output, session) {
     # On app launch ----
     hideTab("tabs", target = "data_management")
     hideTab("tabs", target = "epidemic_trends")
+    hideTab("tabs", target = "patients_info")
+    hideTab("tabs", target = "dengue_virus")
     
     # Language management ----
     observe({
@@ -136,10 +172,12 @@ server <- function(input, output, session) {
         
         if(data_summary$status == "okay") {
             dengue_dta(data)
-            updateDateRangeInput(session = session, inputId = "filter_date", 
+            updateDateRangeInput(session = session, "filter_date", 
                                  start = min(dengue_dta()$collected_date_dd_mm_yy, na.rm = TRUE), 
                                  end = max(dengue_dta()$collected_date_dd_mm_yy, na.rm = TRUE))
             showTab("tabs", target = "epidemic_trends")
+            showTab("tabs", target = "patients_info")
+            showTab("tabs", target = "dengue_virus")
         }
     })
     

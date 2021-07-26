@@ -5,3 +5,13 @@
   padding-left: 10px;
   margin-bottom: 20px;
 }
+
+.box {
+  margin-bottom: 20px;
+  padding: 5px;
+  border-style: solid;
+  border-color: #7b8a8b;
+  background-color: rgba(0,0,0,0.03);
+  color: #212529;
+  border-radius: .25rem;
+}

@@ -25,7 +25,8 @@ if (is_empty(ukn_village)) {
 data <- left_join(data, 
                   village_code %>% 
                     select(-id, -district_code) %>%
-                    mutate(village_code = as.character(village_code)), 
+                    mutate(village_code = as.character(village_code)) %>%
+                    rename(longitude = longtitude, latitude = lattitude), 
                   by = c("patient_village" = "village_code"))
 
 # Obtain district data ----
