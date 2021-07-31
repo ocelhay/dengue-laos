@@ -111,6 +111,64 @@ ui <- fluidPage(
                         )
                ),
                tabPanel(i18n$t("Dengue Virus"), value = "dengue_virus",
+                        tabsetPanel(
+                            tabPanel("ELISA Method", value = "elisa",
+                                     fluidRow(column(width = 3,
+                                                     br(),
+                                                     p("Confirmatory results for dengue infection"),
+                                                     tableOutput("table_patients_elisa_ns1")
+                                     ),
+                                     column(width = 9,
+                                            plotOutput("plot_patients_elisa_ns1")
+                                     )),
+                                     br(),
+                                     fluidRow(column(width = 3,
+                                                     br(),
+                                                     p("Presumptive results for dengue infection"),
+                                                     tableOutput("table_patients_elisa_igm")
+                                     ),
+                                     column(width = 9,
+                                            plotOutput("plot_patients_elisa_igm")
+                                     ))
+                            ),
+                            tabPanel("RDT Method", value = "rdt",
+                                     fluidRow(column(width = 3,
+                                                     br(),
+                                                     p("Confirmatory results for dengue infection"),
+                                                     tableOutput("table_patients_rdt_ns1")
+                                     ),
+                                     column(width = 9,
+                                            plotOutput("plot_patients_rdt_ns1")
+                                     )),
+                                     fluidRow(column(width = 3,
+                                                     br(),
+                                                     p("Presumptive results for dengue infection"),
+                                                     tableOutput("table_patients_rdt_igm")
+                                     ),
+                                     column(width = 9,
+                                            plotOutput("plot_patients_rdt_igm")
+                                     ))
+                            ),
+                            tabPanel("PCR Method", value = "pcr",
+                                     fluidRow(column(width = 3,
+                                                     br(),
+                                                     p("Confirmatory results for dengue infection"),
+                                                     tableOutput("table_patients_pcr_res")
+                                     ),
+                                     column(width = 9,
+                                            plotOutput("plot_patients_pcr_res")
+                                     )),
+                                     fluidRow(column(width = 3,
+                                                     tableOutput("table_patients_pcr")
+                                     ),
+                                     column(width = 9,
+                                            plotOutput("plot_patients_pcr")
+                                     ))
+                                     
+                                     
+                                     
+                            )
+                        )
                )
     )
 )
