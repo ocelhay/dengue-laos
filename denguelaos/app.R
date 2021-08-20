@@ -16,24 +16,30 @@ ui <- fluidPage(
                    condition = "input.tabs != 'welcome' & input.tabs != 'data_management'",
                    div(id = "filters",
                        fluidRow(
-                           column(5,
-                                  h4(icon("filter"), "Filter Dataset"),
-                                  dateRangeInput("filter_date", "by Collection Date:"),
-                                  prettySwitch("filter_date_unknow", label = "Keep unknown dates", status = "primary", value = TRUE, slim = TRUE),
+                           column(4,
+                                  h5(icon("filter"), "Filter Dataset"),
+                                  fluidRow(
+                                      column(6, dateRangeInput("filter_date", "by Collection Date:")),
+                                      column(6, br(), prettySwitch("filter_date_unknow", label = "Keep unknown dates", status = "primary", value = TRUE, slim = TRUE))
+                                  ),
                                   checkboxGroupInput("filter_age", "by Age Categories:", inline = TRUE, 
                                                      choices = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown"), 
-                                                     selected = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown"))
-                           ),
-                           column(5,
-                                  br(), br(),
+                                                     selected = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown")),
                                   checkboxGroupInput("filter_gender", "by Gender:", inline = TRUE, 
                                                      choices = c("Male", "Female", "Unknown"),
-                                                     selected = c("Male", "Female", "Unknown")),
+                                                     selected = c("Male", "Female", "Unknown"))
+                           ),
+                           column(5,
                                   checkboxGroupInput("filter_status", "by Case Status:", inline = TRUE,
                                                      choices = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"), 
-                                                     selected = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"))
+                                                     selected = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection")),
+                                  div(id = "diag-box",
+                                      div(id = "confirmed-box", HTML("<strong>Confirmed dengue infection</strong> = dengue PCR and/or dengue NS1 positive (RDT or ELISA)")),
+                                      div(id = "presumptive-box", HTML("<strong>Presumptive dengue infection</strong> = anti-dengue IgM detection (RDT or ELISA) alone (PCR and NS1 negative))")),
+                                      div(id = "noevidence-box", HTML("<strong>No evidence of dengue infection</strong> = all other cases"))
+                                  ),
                            ),
-                           column(2,
+                           column(3, 
                                   br(), br(),
                                   gaugeOutput("filter_gauge", width = "100%", height = "100px"), br(),
                                   textOutput("filter_gauge_text")
@@ -47,7 +53,7 @@ ui <- fluidPage(
                         
                         img(src = "./images/LOMWRU_partners_logo.jpg", style = "height: 40px;"),
                         fluidRow(
-                            column(4,
+                            column(3,
                                    br(), br(),
                                    selectInput('selected_language', span(icon('language'), i18n$t('Language:')),
                                                choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
@@ -58,11 +64,12 @@ ui <- fluidPage(
                                      tags$a(href = "mailto:olivier.celhay@gmail.com", "contact us.")),
                                    fileInput("file_excel", label = NULL, accept = ".xlsx", buttonLabel = "Browse...")
                             ),
-                            column(4,
-                                   img(src = "./images/dengue_fever_symptoms.png", width = "95%", alt = "Dengue Fever Symptoms")
+                            column(5,
+                                   includeMarkdown("./www/markdown/about_dengue.md")
                             ),
                             column(4,
-                                   includeMarkdown("./www/markdown/about_dengue.md")
+                                   includeMarkdown("./www/markdown/about_dashboard.md")
+                                   
                             )
                         )
                ),
@@ -113,61 +120,76 @@ ui <- fluidPage(
                ),
                tabPanel(i18n$t("Dengue Virus"), value = "dengue_virus",
                         tabsetPanel(
+                            tabPanel("PCR Method", value = "pcr",
+                                     fluidRow(
+                                         column(width = 3,
+                                                br(),
+                                                p("Confirmatory results for dengue infection - PCR"),
+                                                tableOutput("table_patients_pcr_res")
+                                         ),
+                                         column(width = 9,
+                                                highchartOutput("plot_patients_pcr_res")
+                                         )),
+                                     fluidRow(
+                                         column(width = 3,
+                                                p("Presumptive results for dengue infection - PCR"),
+                                                tableOutput("table_patients_pcr")
+                                         ),
+                                         column(width = 9,
+                                                highchartOutput("plot_patients_pcr")
+                                         ))
+                            ),
                             tabPanel("ELISA Method", value = "elisa",
-                                     fluidRow(column(width = 3,
-                                                     br(),
-                                                     p("Confirmatory results for dengue infection"),
-                                                     tableOutput("table_patients_elisa_ns1")
-                                     ),
-                                     column(width = 9,
-                                            plotOutput("plot_patients_elisa_ns1")
-                                     )),
+                                     fluidRow(
+                                         column(width = 3,
+                                                br(),
+                                                p("Confirmatory results for dengue infection - ELISA NS1"),
+                                                tableOutput("table_patients_elisa_ns1")
+                                         ),
+                                         column(width = 9,
+                                                highchartOutput("plot_patients_elisa_ns1")
+                                         )),
                                      br(),
-                                     fluidRow(column(width = 3,
-                                                     br(),
-                                                     p("Presumptive results for dengue infection"),
-                                                     tableOutput("table_patients_elisa_igm")
-                                     ),
-                                     column(width = 9,
-                                            plotOutput("plot_patients_elisa_igm")
-                                     ))
+                                     fluidRow(
+                                         column(width = 3,
+                                                br(),
+                                                p("Presumptive results for dengue infection - ELISA IgM"),
+                                                tableOutput("table_patients_elisa_igm")
+                                         ),
+                                         column(width = 9,
+                                                highchartOutput("plot_patients_elisa_igm")
+                                         ))
                             ),
                             tabPanel("RDT Method", value = "rdt",
-                                     fluidRow(column(width = 3,
-                                                     br(),
-                                                     p("Confirmatory results for dengue infection"),
-                                                     tableOutput("table_patients_rdt_ns1")
-                                     ),
-                                     column(width = 9,
-                                            plotOutput("plot_patients_rdt_ns1")
-                                     )),
-                                     fluidRow(column(width = 3,
-                                                     br(),
-                                                     p("Presumptive results for dengue infection"),
-                                                     tableOutput("table_patients_rdt_igm")
-                                     ),
-                                     column(width = 9,
-                                            plotOutput("plot_patients_rdt_igm")
-                                     ))
-                            ),
-                            tabPanel("PCR Method", value = "pcr",
-                                     fluidRow(column(width = 3,
-                                                     br(),
-                                                     p("Confirmatory results for dengue infection"),
-                                                     tableOutput("table_patients_pcr_res")
-                                     ),
-                                     column(width = 9,
-                                            plotOutput("plot_patients_pcr_res")
-                                     )),
-                                     fluidRow(column(width = 3,
-                                                     tableOutput("table_patients_pcr")
-                                     ),
-                                     column(width = 9,
-                                            plotOutput("plot_patients_pcr")
-                                     ))
-                                     
-                                     
-                                     
+                                     fluidRow(
+                                         column(width = 3,
+                                                br(),
+                                                p("Confirmatory results for dengue infection - RDT NS1"),
+                                                tableOutput("table_patients_rdt_ns1")
+                                         ),
+                                         column(width = 9,
+                                                highchartOutput("plot_patients_rdt_ns1")
+                                         )),
+                                     fluidRow(
+                                         column(width = 3,
+                                                br(),
+                                                p("Presumptive results for dengue infection - RDT IgM"),
+                                                tableOutput("table_patients_rdt_igm")
+                                         ),
+                                         column(width = 9,
+                                                highchartOutput("plot_patients_rdt_igm")
+                                         )
+                                         ),
+                                     fluidRow(
+                                         column(width = 3,
+                                                br(),
+                                                p("Presumptive results for dengue infection - RDT IgG"),
+                                                tableOutput("table_patients_rdt_igg")
+                                         ),
+                                         column(width = 9,
+                                                highchartOutput("plot_patients_rdt_igg")
+                                         )
+                                     )
                             )
                         )
                )

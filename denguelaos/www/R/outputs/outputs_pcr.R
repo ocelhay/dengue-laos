@@ -3,31 +3,26 @@ output$table_patients_pcr_res <- renderTable({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  table((dengue_dta_filt()$pcr_result))%>%
-    as.data.frame() %>%
-    rename(`PCR Result` = Var1, Patients = Freq)
+  table_method_results(vec = dengue_dta_filt()$pcr_result)
 })
 
 # Plot of patients, PCR results
-output$plot_patients_pcr_res <- renderPlot({
+output$plot_patients_pcr_res <- renderHighchart({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  dengue_dta_filt() %>%
-    group_by(collection_year, collection_month, pcr_result) %>% 
-    count() %>%
-    ungroup() %>%
-    complete(nesting(collection_year, collection_month, pcr_result), fill = list(n = 0)) %>%
-    ggplot(aes(x = collection_month, y = n, fill = pcr_result)) +
-    geom_col() +
-    labs(x = NULL, y = "Nb. of Tests", title = "PCR Results") +
-    # scale_fill_manual(values = cols_pcr_result) +
-    facet_wrap(~ collection_year, scales = "free_x") +
-    theme_minimal(base_size = 13) +
-    theme(legend.position = "bottom", legend.title = element_blank(),
-          axis.text.x = element_text(angle = 45, hjust = 1)) +
-    guides(fill = guide_legend(nrow = 2))
-  
+  dengue_dta_filt() |>
+    filter(! is.na(collection_year), ! is.na(collection_month)) |> 
+    filter(pcr_result %in% c("Positive", "equivocal", "Negative")) |> 
+    mutate(pcr_result = factor(pcr_result, levels = c("Negative", "equivocal", "Positive"))) |> 
+    mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
+    count(collection_year_month, pcr_result) |> 
+    hchart(type = "column", hcaes(x = "collection_year_month", y = "n", group = "pcr_result")) |> 
+    hc_yAxis(title = list(text = "Results")) |>
+    hc_xAxis(title = "") |> 
+    hc_colors(cols_nep) |> 
+    hc_plotOptions(series = list(stacking = "normal")) |>
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
 })
 
 
@@ -36,30 +31,22 @@ output$table_patients_pcr <- renderTable({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  table((dengue_dta_filt()$pcr_serortype_result))%>%
-    as.data.frame() %>%
-    rename(`PCR Serotype` = Var1, Patients = Freq)
+  table_method_results(vec = dengue_dta_filt()$pcr_serortype_result)
 })
 
 # Plot of patients, PCR serotype
-output$plot_patients_pcr <- renderPlot({
+output$plot_patients_pcr <- renderHighchart({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  dengue_dta_filt() %>%
-    filter(!is.na(pcr_serortype_result)) %>%
-    group_by(collection_year, collection_month, pcr_serortype_result) %>% 
-    count() %>%
-    ungroup() %>%
-    complete(nesting(collection_year, collection_month, pcr_serortype_result), fill = list(n = 0)) %>%
-    ggplot(aes(x = collection_month, y = n, fill = pcr_serortype_result)) +
-    geom_col() +
-    labs(x = NULL, y = "Nb. of Tests", title = "PCR Serotype") +
-    # scale_fill_manual(values = cols_pcr_serotype) +
-    facet_wrap(~ collection_year, scales = "free_x") +
-    theme_minimal(base_size = 13) +
-    theme(legend.position = "bottom", legend.title = element_blank(),
-          axis.text.x = element_text(angle = 45, hjust = 1)) +
-    guides(fill = guide_legend(nrow = 2))
-  
+  dengue_dta_filt() |>
+    filter(! is.na(collection_year), ! is.na(collection_month)) |> 
+    filter(! is.na(pcr_serortype_result), pcr_serortype_result != "Not done", pcr_serortype_result != "Unknown") |> 
+    mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
+    count(collection_year_month, pcr_serortype_result) |> 
+    hchart(type = "column", hcaes(x = "collection_year_month", y = "n", group = "pcr_serortype_result")) |> 
+    hc_yAxis(title = list(text = "PCR Results")) |>
+    hc_xAxis(title = "") |> 
+    hc_plotOptions(series = list(stacking = "normal")) |>
+    hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
 })

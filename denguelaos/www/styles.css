@@ -15,3 +15,32 @@
   color: #212529;
   border-radius: .25rem;
 }
+
+.hl-box {
+  background-color: #fffbce;
+  padding: 0.2rem;
+  margin: 0.2rem;
+  text-align: center;
+}
+
+#diag-box {
+	border-width: 1px;
+	padding: 10px;
+}
+
+#confirmed-box {
+  background-color: #ca0020;
+  padding: 2px;
+  color: white;
+}
+
+#presumptive-box {
+  background-color: #f4a582;
+  padding: 2px;
+  color: black;
+}
+
+#noevidence-box {
+  background-color: #92c5de;
+  padding: 2px;
+  color: bla
