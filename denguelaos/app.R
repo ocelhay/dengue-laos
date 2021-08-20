@@ -42,7 +42,8 @@ ui <- fluidPage(
                    )
                ),
                tabPanel(i18n$t("Welcome"), value = "welcome",
-                        actionLink("debug", "Click to call browser()"), br(),
+                        # TODO (Prod): comment
+                        # actionLink("debug", "Click to call browser()"), br(),
                         
                         img(src = "./images/LOMWRU_partners_logo.jpg", style = "height: 40px;"),
                         fluidRow(
@@ -175,8 +176,8 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-    # TODO: remove on prod.
-    observeEvent(input$debug, browser())
+    # TODO (Prod): comment
+    # observeEvent(input$debug, browser())
     
     # Reactive data management ----
     checklist_status <- reactiveValues()

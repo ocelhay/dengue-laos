@@ -61,7 +61,7 @@ date_onset_after_collected <- which(data$onset_date_dd_mm_yy > data$collected_da
 if (is_empty((date_onset_after_collected))) {
   checklist_status$date_onset_after_collected <- list(status = "okay", details = "All dates of symptom onsets are prior or equal to the date of data collection.")
 } else {
-  checklist_status$date_onset_after_collected <- list(status = "warning", details = paste0("The date of symprom onset is posterior to the date of data collection for patient no: ",
+  checklist_status$date_onset_after_collected <- list(status = "warning", details = paste0("The date of symptom onset is posterior to the date of data collection for patient no: ",
                                                                       paste(data[date_onset_after_collected, "no"], collapse = ", ")))
 }
 
