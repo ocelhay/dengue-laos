@@ -1,6 +1,7 @@
-app_version <- "prototype.01"
+app_version <- "prototype.02"
 
 library(bslib)  # bs_theme()
+library(DiagrammeR)
 library(DT)
 library(flexdashboard)  # gaugeOutput()
 library(glue)

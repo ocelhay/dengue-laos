@@ -120,6 +120,9 @@ ui <- fluidPage(
                ),
                tabPanel(i18n$t("Dengue Virus"), value = "dengue_virus",
                         tabsetPanel(
+                            tabPanel("Summary", value = "summary",
+                                     grVizOutput("diagram_algo", height = "600px")
+                            ),
                             tabPanel("PCR Method", value = "pcr",
                                      fluidRow(
                                          column(width = 3,
@@ -179,7 +182,7 @@ ui <- fluidPage(
                                          column(width = 9,
                                                 highchartOutput("plot_patients_rdt_igm")
                                          )
-                                         ),
+                                     ),
                                      fluidRow(
                                          column(width = 3,
                                                 br(),
