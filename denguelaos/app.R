@@ -24,23 +24,31 @@ ui <- fluidPage(
                                   ),
                                   checkboxGroupInput("filter_age", "by Age Categories:", inline = TRUE, 
                                                      choices = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown"), 
-                                                     selected = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown")),
-                                  checkboxGroupInput("filter_gender", "by Gender:", inline = TRUE, 
-                                                     choices = c("Male", "Female", "Unknown"),
-                                                     selected = c("Male", "Female", "Unknown"))
+                                                     selected = c("Under 5 y.o.", "5 to 15 y.o.", "Above 15 y.o.", "Unknown"))
                            ),
                            column(5,
-                                  checkboxGroupInput("filter_status", "by Case Status:", inline = TRUE,
-                                                     choices = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"), 
-                                                     selected = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection")),
-                                  div(id = "diag-box",
-                                      div(id = "confirmed-box", HTML("<strong>Confirmed dengue infection</strong> = dengue PCR and/or dengue NS1 positive (RDT or ELISA)")),
-                                      div(id = "presumptive-box", HTML("<strong>Presumptive dengue infection</strong> = anti-dengue IgM detection (RDT or ELISA) alone (PCR and NS1 negative))")),
-                                      div(id = "noevidence-box", HTML("<strong>No evidence of dengue infection</strong> = all other cases"))
-                                  ),
+                                  HTML("by Case Status:"),
+                                  # checkboxGroupInput("filter_status", "by Case Status:", inline = FALSE,
+                                  #                    choiceNames = c("<strong>Confirmed dengue infection</strong>", "Presumptive dengue infection", "No evidence of dengue infection"), 
+                                  #                    choiceValues = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection"), 
+                                  #                    selected = c("Confirmed dengue infection", "Presumptive dengue infection", "No evidence of dengue infection")),
+                                  # div(id = "diag-box",
+                                  div(id = "confirmed-box", 
+                                      awesomeCheckbox("filter_status_confirmed", "Confirmed dengue infection = dengue PCR and/or dengue NS1 positive (RDT or ELISA)",
+                                                      value = TRUE, width = "100%")),
+                                  div(id = "presumptive-box", 
+                                      awesomeCheckbox("filter_status_presumptive", "Presumptive dengue infection = anti-dengue IgM detection (RDT or ELISA) alone (PCR and NS1 negative))",
+                                                      value = TRUE, width = "100%")),
+                                  div(id = "noevidence-box", 
+                                      awesomeCheckbox("filter_status_noevidence", "No evidence of dengue infection = all other cases",
+                                                      value = TRUE, width = "100%"))
+                                  # ),
                            ),
                            column(3, 
-                                  br(), br(),
+                                  checkboxGroupInput("filter_gender", "by Gender:", inline = TRUE, 
+                                                     choices = c("Male", "Female", "Unknown"),
+                                                     selected = c("Male", "Female", "Unknown")),
+                                  br(),
                                   gaugeOutput("filter_gauge", width = "100%", height = "100px"), br(),
                                   textOutput("filter_gauge_text")
                            )
@@ -55,8 +63,10 @@ ui <- fluidPage(
                         fluidRow(
                             column(3,
                                    br(), br(),
-                                   selectInput('selected_language', span(icon('language'), i18n$t('Language:')),
-                                               choices = i18n$get_languages(), selected = i18n$get_key_translation(), width = "150px"
+                                   pickerInput(
+                                       "selected_language", label = span(icon("language"), i18n$t("Language:")),
+                                       choices = lang$val,
+                                       choicesOpt = list(content = lang$img)
                                    ),
                                    br(), 
                                    strong(icon("upload"), "Upload Data (.xlsx format)"),
@@ -212,13 +222,18 @@ server <- function(input, output, session) {
     
     # Filter the dataset based on UI
     dengue_dta_filt <- reactive({
+        filter_vec <- NULL
+        if(input$filter_status_confirmed)   filter_vec <- c(filter_vec, "Confirmed dengue infection")
+        if(input$filter_status_presumptive) filter_vec <- c(filter_vec, "Presumptive dengue infection")
+        if(input$filter_status_noevidence)  filter_vec <- c(filter_vec, "No evidence of dengue infection")
+        
         if(input$filter_date_unknow) return(
             dengue_dta() %>% filter(
                 is.na(collected_date_dd_mm_yy) | collected_date_dd_mm_yy >= input$filter_date[1],
                 is.na(collected_date_dd_mm_yy) | collected_date_dd_mm_yy <= input$filter_date[2],
                 age_category %in% input$filter_age,
                 gender %in% input$filter_gender,
-                dengue_virus %in% input$filter_status
+                dengue_virus %in% filter_vec
             )
         )
         dengue_dta() %>% filter(
@@ -226,7 +241,7 @@ server <- function(input, output, session) {
             collected_date_dd_mm_yy <= input$filter_date[2],
             age_category %in% input$filter_age,
             gender %in% input$filter_gender,
-            dengue_virus %in% input$filter_status
+            dengue_virus %in% filter_vec
         )
     })
     

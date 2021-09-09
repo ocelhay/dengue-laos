@@ -30,17 +30,17 @@
 
 #confirmed-box {
   background-color: #ca0020;
-  padding: 2px;
+  padding-left: 40px;
   color: white;
 }
 
 #presumptive-box {
   background-color: #f4a582;
-  padding: 2px;
+  padding-left: 40px;
   color: black;
 }
 
 #noevidence-box {
   background-color: #92c5de;
-  padding: 2px;
-  color: bla
+  padding-left: 40px;
+  color: black;

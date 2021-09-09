@@ -1,6 +1,6 @@
 ### About Dengue
 
-Dengue is a mosquito-borne viral disease that has rapidly spread in all regions of WHO in recent years. Dengue virus is transmitted by female mosquitoes mainly of the species Aedes aegypti and, to a lesser extent, Ae. albopictus. This mosquito also transmits chikungunya, yellow fever and Zika infection. Dengue is widespread throughout the tropics, with local variations in risk influenced by rainfall, temperature and unplanned rapid urbanization.
+Dengue is a mosquito-borne viral disease that has rapidly spread in all regions of WHO in recent years. Dengue virus is transmitted by female mosquitoes mainly of the species *Aedes aegypti* and, to a lesser extent, *Ae. albopictus*. This mosquito also transmits chikungunya, yellow fever and Zika infection. Dengue is widespread throughout the tropics, with local variations in risk influenced by rainfall, temperature and unplanned rapid urbanization.
 
 <img align = "left" src = "./images/dengue_fever_symptoms.png" width = "50%" alt = "Dengue Fever Symptoms"/>
 

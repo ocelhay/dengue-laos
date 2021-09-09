@@ -1,5 +1,5 @@
 # Import data ----
-data <- try(read_xlsx(input$file_excel$datapath, sheet = "Data"))
+data <- try(read_xlsx(input$file_excel$datapath, sheet = "Data", na = c("Missing data", "missing data")))
 ward <- try(read_xlsx(input$file_excel$datapath, sheet = "ward list"))
 village_code <- try(read_xlsx(input$file_excel$datapath, sheet = "village code"))
 district_code <- try(read_xlsx(input$file_excel$datapath, sheet = "disctrict code"))
