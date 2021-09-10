@@ -9,7 +9,7 @@ Results were obtained by testing by PCR, ELISA and RDT admission serum from pati
 
 #### Acknowledgments and Credits
 
-- App Development Team: [Olivier Celhay](https://olivier.celhay.net), [Audrey Dubot-Pérès](mailto:Audrey@tropmedres.ac). With contributions from Elizabeth Ashley. 
+- App Development Team: [Olivier Celhay](https://olivier.celhay.net), [Audrey Dubot-Pérès](mailto:Audrey@tropmedres.ac). With contributions from [Paul Newton](paul.newton@tropmedres.ac), [Elizabeth Ashley](liz@tropmedres.ac). 
 - Data curation: Vilayouth Phimolsarnnousith and Manivanh Vongsouvath.
 
 Software:

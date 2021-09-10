@@ -1,4 +1,4 @@
-app_version <- "prototype.02"
+app_version <- "v0.3"
 
 library(bslib)  # bs_theme()
 library(DiagrammeR)
