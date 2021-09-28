@@ -2,8 +2,11 @@
 output$table_patients_pcr_res <- renderTable({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
-  
-  table_method_results(vec = dengue_dta_filt()$pcr_result)
+
+  dengue_dta_filt() %>%
+    filter(pcr_result %in% c("Negative", "Equivocal", "Positive")) %>%
+    pull(pcr_result) %>%
+  table_method_results()
 })
 
 # Plot of patients, PCR results
@@ -13,8 +16,8 @@ output$plot_patients_pcr_res <- renderHighchart({
   
   dengue_dta_filt() |>
     filter(! is.na(collection_year), ! is.na(collection_month)) |> 
-    filter(pcr_result %in% c("Positive", "equivocal", "Negative")) |> 
-    mutate(pcr_result = factor(pcr_result, levels = c("Negative", "equivocal", "Positive"))) |> 
+    filter(pcr_result %in% c("Negative", "Equivocal", "Positive")) |> 
+    mutate(pcr_result = factor(pcr_result, levels = c("Negative", "Equivocal", "Positive"))) |> 
     mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
     count(collection_year_month, pcr_result) |> 
     hchart(type = "column", hcaes(x = "collection_year_month", y = "n", group = "pcr_result")) |> 
@@ -31,7 +34,10 @@ output$table_patients_pcr <- renderTable({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  table_method_results(vec = dengue_dta_filt()$pcr_serortype_result)
+  dengue_dta_filt() %>%
+    filter(pcr_serortype_result %in% c("DENV-1", "DENV-2", "DENV-2/4", "DENV-3", "DENV-4")) %>%
+    pull(pcr_serortype_result) %>%
+    table_method_results()
 })
 
 # Plot of patients, PCR serotype

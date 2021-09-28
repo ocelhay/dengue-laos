@@ -1,12 +1,12 @@
 source("./www/R/startup.R", local = TRUE)
 
-ui <- fluidPage(
+ui <- page(
     title = "Dashboard of LOMWRU Dengue fever data",
     theme = app_theme_en,
     includeCSS("www/styles.css"),
     usei18n(i18n),
     
-    navbarPage(id = "tabs",
+    page_navbar(id = "tabs",
                title = "LOMWRU Dengue Dashboard",
                collapsible = TRUE, inverse = FALSE, 
                position = "static-top",
@@ -55,7 +55,7 @@ ui <- fluidPage(
                        )
                    )
                ),
-               tabPanel(i18n$t("Welcome"), value = "welcome",
+               nav(i18n$t("Welcome"), value = "welcome",
                         # TODO (Prod): comment
                         # actionLink("debug", "Click to call browser()"), br(),
                         
@@ -83,19 +83,19 @@ ui <- fluidPage(
                             )
                         )
                ),
-               tabPanel(i18n$t("Data Management"), value = "data_management",
+               nav(i18n$t("Data Management"), value = "data_management",
                         fluidRow(
                             column(2, htmlOutput("checklist_data_summary")),
                             column(5, strong("Import Log:"), htmlOutput("checklist_data")),
                             column(5, strong("Missing Values:"), DT::dataTableOutput("table_na_values"))
                         )
                ),
-               tabPanel(i18n$t("Epidemic Trends"), value = "epidemic_trends",
+               nav(i18n$t("Epidemic Trends"), value = "epidemic_trends",
                         pickerInput("display_unit", label = NULL, 
                                     choices = c("Use heuristic", "Display by month", "Display by year")),
                         highchartOutput("epidemic_ts")
                ),
-               tabPanel(i18n$t("Patients Info"), value = "patients_info",
+               nav(i18n$t("Patients Info"), value = "patients_info",
                         fluidRow(
                             column(3,
                                    div(class = "box",
@@ -128,12 +128,12 @@ ui <- fluidPage(
                             )
                         )
                ),
-               tabPanel(i18n$t("Dengue Virus"), value = "dengue_virus",
+               nav(i18n$t("Dengue Virus"), value = "dengue_virus",
                         tabsetPanel(
-                            tabPanel("Summary", value = "summary",
+                            nav("Summary", value = "summary",
                                      grVizOutput("diagram_algo", height = "600px")
                             ),
-                            tabPanel("PCR Method", value = "pcr",
+                            nav("PCR Method", value = "pcr",
                                      fluidRow(
                                          column(width = 3,
                                                 br(),
@@ -145,18 +145,21 @@ ui <- fluidPage(
                                          )),
                                      fluidRow(
                                          column(width = 3,
-                                                p("Presumptive results for dengue infection - PCR"),
+                                                p("Serotyping results for PCR positive patients"),
                                                 tableOutput("table_patients_pcr")
                                          ),
                                          column(width = 9,
                                                 highchartOutput("plot_patients_pcr")
                                          ))
                             ),
-                            tabPanel("ELISA Method", value = "elisa",
+                            nav("ELISA Method", value = "elisa",
                                      fluidRow(
                                          column(width = 3,
                                                 br(),
-                                                p("Confirmatory results for dengue infection - ELISA NS1"),
+                                                HTML("Confirmatory results for dengue infection - ELISA NS1"),
+                                                br(),
+                                                em("(only performed for PCR negative patients)"),
+                                                br(), br(),
                                                 tableOutput("table_patients_elisa_ns1")
                                          ),
                                          column(width = 9,
@@ -166,14 +169,17 @@ ui <- fluidPage(
                                      fluidRow(
                                          column(width = 3,
                                                 br(),
-                                                p("Presumptive results for dengue infection - ELISA IgM"),
+                                                HTML("Presumptive results for dengue infection - ELISA IgM"),
+                                                br(),
+                                                em("(only performed for PCR and NS1 negative patients)"),
+                                                br(), br(),
                                                 tableOutput("table_patients_elisa_igm")
                                          ),
                                          column(width = 9,
                                                 highchartOutput("plot_patients_elisa_igm")
                                          ))
                             ),
-                            tabPanel("RDT Method", value = "rdt",
+                            nav("RDT Method", value = "rdt",
                                      fluidRow(
                                          column(width = 3,
                                                 br(),
@@ -252,10 +258,11 @@ server <- function(input, output, session) {
     hideTab("tabs", target = "dengue_virus")
     
     # Language management ----
-    observe({
-        session$setCurrentTheme(
-            if (isTRUE(input$selected_language == "la")) app_theme_la else app_theme_en
-        )
+    observeEvent(input$selected_language, {
+        update_lang(session, input$selected_language)
+        
+        if (isTRUE(input$selected_language != "la"))  session$setCurrentTheme(app_theme_en)
+        if (isTRUE(input$selected_language == "la"))  session$setCurrentTheme(app_theme_la)
     })
     
     observeEvent(input$selected_language, {

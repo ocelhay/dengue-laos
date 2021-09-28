@@ -2,13 +2,13 @@ output$diagram_algo <- renderGrViz({
   
   admit <- dengue_dta_filt() %>% nrow()
   pcr_pos <- dengue_dta_filt() %>% filter(pcr_result == "Positive") %>% nrow()
-  pcr_equ <- dengue_dta_filt() %>% filter(pcr_result == "equivocal") %>% nrow()
+  pcr_equ <- dengue_dta_filt() %>% filter(pcr_result == "Equivocal") %>% nrow()
   pcr_neg <- dengue_dta_filt() %>% filter(pcr_result == "Negative") %>% nrow()
   pcr_nos <- dengue_dta_filt() %>% filter(pcr_result == "Unknown") %>% nrow()
   pcr_nod <- dengue_dta_filt() %>% filter(pcr_result == "not done") %>% nrow()
   
   ns1_pos <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "Positive") %>% nrow()
-  ns1_equ <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "equivocal") %>% nrow()
+  ns1_equ <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "Equivocal") %>% nrow()
   ns1_neg <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "Negative") %>% nrow()
   ns1_nos <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "Unknown") %>% nrow()
   ns1_nod <- dengue_dta_filt() %>% filter(elisa_ns1_test_result %in% c("Not done", "not done (PCR+)")) %>% nrow()

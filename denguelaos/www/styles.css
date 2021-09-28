@@ -3,7 +3,8 @@
   border-color: black;
   border-width: 2px;
   padding-left: 10px;
-  margin-bottom: 20px;
+  margin: 5px 10px 20px;
+  margin: ;
 }
 
 .box {
@@ -14,13 +15,6 @@
   background-color: rgba(0,0,0,0.03);
   color: #212529;
   border-radius: .25rem;
-}
-
-.hl-box {
-  background-color: #fffbce;
-  padding: 0.2rem;
-  margin: 0.2rem;
-  text-align: center;
 }
 
 #diag-box {

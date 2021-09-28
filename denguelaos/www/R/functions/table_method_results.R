@@ -1,18 +1,20 @@
 table_method_results <- function(vec) {
+  total <- length(vec)
   
   table(vec, useNA = "ifany") |>
     as.data.frame() |>
+    mutate(Freq = glue("{Freq} ({round(100*Freq/total, 1)}%)")) |> 
     mutate(order = case_when(
       vec == "Positive"  ~ 1,
-      vec == "equivocal" ~ 2,
+      vec == "Equivocal" ~ 2,
       vec == "Negative"  ~ 3,
-      vec == "not done (PCR+)"  ~ 4,
-      vec == "not done (NS1+)"  ~ 5,
-      vec == "not done"  ~ 6,
-      TRUE  ~ 7,
+      TRUE ~ 4
     )) |>
     arrange(order) |>
     select(-order) |>
+    bind_rows(
+      tribble(~vec, ~Freq,
+              "Total", as.character(total))
+    ) |> 
     rename(` ` = vec, Patients = Freq)
-  
 }

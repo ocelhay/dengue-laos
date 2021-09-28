@@ -2,7 +2,7 @@
 
 #### Dengue Results
 
-<div class = "hl-box">
+<div class = "alert alert-warning">
 Results were obtained by testing by PCR, ELISA and RDT admission serum from patients admitted at Mahosot hospital with clinical presentation meeting 2009 WHO criteria for dengue fever.
 </div>
 

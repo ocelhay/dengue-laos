@@ -3,7 +3,10 @@ output$table_patients_rdt_ns1 <- renderTable({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  table_method_results(vec = dengue_dta_filt()$rdt_ns1_result)
+  dengue_dta_filt() %>%
+    filter(rdt_ns1_result %in% c("Negative", "Equivocal", "Positive")) %>%
+    pull(rdt_ns1_result) %>%
+    table_method_results()
 })
 
 # Plot of patients, RDT NS1
@@ -13,8 +16,8 @@ output$plot_patients_rdt_ns1 <- renderHighchart({
   
   dengue_dta_filt() |>
     filter(! is.na(collection_year), ! is.na(collection_month)) |> 
-    filter(rdt_ns1_result %in% c("Positive", "equivocal", "Negative")) |> 
-    mutate(rdt_ns1_result = factor(rdt_ns1_result, levels = c("Negative", "equivocal", "Positive"))) |> 
+    filter(rdt_ns1_result %in% c("Negative", "Equivocal", "Positive")) |> 
+    mutate(rdt_ns1_result = factor(rdt_ns1_result, levels = c("Negative", "Equivocal", "Positive"))) |> 
     mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
     count(collection_year_month, rdt_ns1_result) |> 
     complete(rdt_ns1_result, collection_year_month, fill = list(n = 0)) |> 
@@ -33,8 +36,8 @@ output$plot_patients_rdt_igm <- renderHighchart({
   
   dengue_dta_filt() |>
     filter(! is.na(collection_year), ! is.na(collection_month)) |> 
-    filter(rdt_ig_m_result %in% c("Positive", "equivocal", "Negative")) |> 
-    mutate(rdt_ig_m_result = factor(rdt_ig_m_result, levels = c("Negative", "equivocal", "Positive"))) |> 
+    filter(rdt_ig_m_result %in% c("Negative", "Equivocal", "Positive")) |> 
+    mutate(rdt_ig_m_result = factor(rdt_ig_m_result, levels = c("Negative", "Equivocal", "Positive"))) |> 
     mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
     count(collection_year_month, rdt_ig_m_result) |> 
     complete(rdt_ig_m_result, collection_year_month, fill = list(n = 0)) |> 
@@ -51,7 +54,10 @@ output$table_patients_rdt_igm <- renderTable({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  table_method_results(vec = dengue_dta_filt()$rdt_ig_m_result)
+  dengue_dta_filt() %>%
+    filter(rdt_ig_m_result %in% c("Negative", "Equivocal", "Positive")) %>%
+    pull(rdt_ig_m_result) %>%
+    table_method_results()
 })
 
 
@@ -62,8 +68,8 @@ output$plot_patients_rdt_igg <- renderHighchart({
   
   dengue_dta_filt() |>
     filter(! is.na(collection_year), ! is.na(collection_month)) |> 
-    filter(rdt_ig_g_result %in% c("Positive", "equivocal", "Negative")) |> 
-    mutate(rdt_ig_g_result = factor(rdt_ig_g_result, levels = c("Negative", "equivocal", "Positive"))) |> 
+    filter(rdt_ig_g_result %in% c("Negative", "Equivocal", "Positive")) |> 
+    mutate(rdt_ig_g_result = factor(rdt_ig_g_result, levels = c("Negative", "Equivocal", "Positive"))) |> 
     mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
     count(collection_year_month, rdt_ig_g_result) |> 
     complete(rdt_ig_g_result, collection_year_month, fill = list(n = 0)) |> 
@@ -80,5 +86,8 @@ output$table_patients_rdt_igg <- renderTable({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  table_method_results(vec = dengue_dta_filt()$rdt_ig_g_result)
+  dengue_dta_filt() %>%
+    filter(rdt_ig_g_result %in% c("Negative", "Equivocal", "Positive")) %>%
+    pull(rdt_ig_g_result) %>%
+    table_method_results()
 })
