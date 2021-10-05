@@ -4,7 +4,7 @@ output$table_patients_rdt_ns1 <- renderTable({
   req(dengue_dta_filt() %>% nrow() >= 1)
   
   dengue_dta_filt() %>%
-    filter(rdt_ns1_result %in% c("Negative", "Equivocal", "Positive")) %>%
+    filter(rdt_ns1_result %in% c("Negative", "Positive")) %>%
     pull(rdt_ns1_result) %>%
     table_method_results()
 })
@@ -16,15 +16,15 @@ output$plot_patients_rdt_ns1 <- renderHighchart({
   
   dengue_dta_filt() |>
     filter(! is.na(collection_year), ! is.na(collection_month)) |> 
-    filter(rdt_ns1_result %in% c("Negative", "Equivocal", "Positive")) |> 
-    mutate(rdt_ns1_result = factor(rdt_ns1_result, levels = c("Negative", "Equivocal", "Positive"))) |> 
+    filter(rdt_ns1_result %in% c("Negative", "Positive")) |> 
+    mutate(rdt_ns1_result = factor(rdt_ns1_result, levels = c("Negative", "Positive"))) |> 
     mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
     count(collection_year_month, rdt_ns1_result) |> 
     complete(rdt_ns1_result, collection_year_month, fill = list(n = 0)) |> 
     hchart(type = "column", hcaes(x = "collection_year_month", y = "n", group = "rdt_ns1_result")) |> 
     hc_yAxis(title = list(text = "Results")) |>
     hc_xAxis(title = "") |> 
-    hc_colors(cols_nep) |> 
+    hc_colors(cols_nep[c(1, 3)]) |> 
     hc_plotOptions(series = list(stacking = "normal")) |>
     hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
 })
@@ -36,15 +36,15 @@ output$plot_patients_rdt_igm <- renderHighchart({
   
   dengue_dta_filt() |>
     filter(! is.na(collection_year), ! is.na(collection_month)) |> 
-    filter(rdt_ig_m_result %in% c("Negative", "Equivocal", "Positive")) |> 
-    mutate(rdt_ig_m_result = factor(rdt_ig_m_result, levels = c("Negative", "Equivocal", "Positive"))) |> 
+    filter(rdt_ig_m_result %in% c("Negative", "Positive")) |> 
+    mutate(rdt_ig_m_result = factor(rdt_ig_m_result, levels = c("Negative", "Positive"))) |> 
     mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
     count(collection_year_month, rdt_ig_m_result) |> 
     complete(rdt_ig_m_result, collection_year_month, fill = list(n = 0)) |> 
     hchart(type = "column", hcaes(x = "collection_year_month", y = "n", group = "rdt_ig_m_result")) |> 
     hc_yAxis(title = list(text = "Results")) |>
     hc_xAxis(title = "") |> 
-    hc_colors(cols_nep) |> 
+    hc_colors(cols_nep[c(1, 3)]) |> 
     hc_plotOptions(series = list(stacking = "normal")) |>
     hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
 })
@@ -55,7 +55,7 @@ output$table_patients_rdt_igm <- renderTable({
   req(dengue_dta_filt() %>% nrow() >= 1)
   
   dengue_dta_filt() %>%
-    filter(rdt_ig_m_result %in% c("Negative", "Equivocal", "Positive")) %>%
+    filter(rdt_ig_m_result %in% c("Negative", "Positive")) %>%
     pull(rdt_ig_m_result) %>%
     table_method_results()
 })
@@ -68,15 +68,15 @@ output$plot_patients_rdt_igg <- renderHighchart({
   
   dengue_dta_filt() |>
     filter(! is.na(collection_year), ! is.na(collection_month)) |> 
-    filter(rdt_ig_g_result %in% c("Negative", "Equivocal", "Positive")) |> 
-    mutate(rdt_ig_g_result = factor(rdt_ig_g_result, levels = c("Negative", "Equivocal", "Positive"))) |> 
+    filter(rdt_ig_g_result %in% c("Negative", "Positive")) |> 
+    mutate(rdt_ig_g_result = factor(rdt_ig_g_result, levels = c("Negative", "Positive"))) |> 
     mutate(collection_year_month = as_date(glue("{collection_year}-{collection_month}-01")))  |>
     count(collection_year_month, rdt_ig_g_result) |> 
     complete(rdt_ig_g_result, collection_year_month, fill = list(n = 0)) |> 
     hchart(type = "column", hcaes(x = "collection_year_month", y = "n", group = "rdt_ig_g_result")) |> 
     hc_yAxis(title = list(text = "Results")) |>
     hc_xAxis(title = "") |> 
-    hc_colors(cols_nep) |> 
+    hc_colors(cols_nep[c(1, 3)]) |> 
     hc_plotOptions(series = list(stacking = "normal")) |>
     hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
 })
@@ -87,7 +87,7 @@ output$table_patients_rdt_igg <- renderTable({
   req(dengue_dta_filt() %>% nrow() >= 1)
   
   dengue_dta_filt() %>%
-    filter(rdt_ig_g_result %in% c("Negative", "Equivocal", "Positive")) %>%
+    filter(rdt_ig_g_result %in% c("Negative", "Positive")) %>%
     pull(rdt_ig_g_result) %>%
     table_method_results()
 })
