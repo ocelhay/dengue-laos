@@ -2,10 +2,9 @@ output$epidemic_ts <- renderHighchart({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  
   if(input$display_unit == "Display by year")   display <- "years"
   if(input$display_unit == "Display by month")  display <- "months"
-  if(input$display_unit == "Use heuristic")     display <- heuristic_time_unit(dengue_dta_filt()$collected_date_dd_mm_yy)
+  if(input$display_unit == "Use suggested unit")     display <- heuristic_time_unit(dengue_dta_filt()$collected_date_dd_mm_yy)
   
   if(display == "years") {
     return(dengue_dta_filt() %>%
@@ -34,7 +33,6 @@ output$epidemic_ts <- renderHighchart({
     )
   }
   
-  # TODO: complete to ensure there are no months without data
   if(display == "months") {
   return(
     dengue_dta_filt() %>%

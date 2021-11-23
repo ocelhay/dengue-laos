@@ -62,6 +62,16 @@ if (is_empty(ukn_province)) {
 # collected_date_dd_mm_yy, received_date_dd_mm_yy, elisa_ns1_test_date_dd_mm_yy,
 # elisa_ig_m_test_date_dd_mm_yy, rdt_test_date_dd_mm_yy, pcr_test_date_dd_mm_yy, serotype_pcr_test_date_dd_mm_yy
 
+
+## Date of collection should not be missig
+date_collection_missing <- which(data$collected_date_dd_mm_yy |> is.na())
+ifelse (is_empty(date_collection_missing), 
+        { checklist_status$date_collection_missing <- list(status = "okay",    details = "All dates of data collection are complete.") },
+        { checklist_status$date_collection_missing <- list(status = "warning", details = paste0("Date of data collection is missing for patient(s) no: ",
+                                                                                                   paste(data$no[date_collection_missing], collapse = ", "),
+                                                                                                ". These patients will be removed from dashboard."))})
+
+
 ## Toutes les dates doivent être postérieures ou égales à « Onset Date » ----
 date_onset_after_collected <- which(data$onset_date_dd_mm_yy > data$collected_date_dd_mm_yy)
 ifelse (is_empty(date_onset_after_collected), 
