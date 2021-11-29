@@ -14,6 +14,8 @@ output$plot_patients_pcr_res <- renderHighchart({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
+  cols <- cols_nep[c("Negative", "Equivocal", "Positive") %in% dengue_dta_filt()$pcr_result]
+  
   dengue_dta_filt() |>
     filter(! is.na(collection_year), ! is.na(collection_month)) |> 
     filter(pcr_result %in% c("Negative", "Equivocal", "Positive")) |> 
@@ -23,7 +25,7 @@ output$plot_patients_pcr_res <- renderHighchart({
     hchart(type = "column", hcaes(x = "collection_year_month", y = "n", group = "pcr_result")) |> 
     hc_yAxis(title = list(text = "Results")) |>
     hc_xAxis(title = "") |> 
-    hc_colors(cols_nep) |> 
+    hc_colors(cols) |> 
     hc_plotOptions(series = list(stacking = "normal")) |>
     hc_exporting(enabled = TRUE, buttons = list(contextButton = list(menuItems = hc_export_kind)))
 })

@@ -243,7 +243,11 @@ data <- data %>%
          collection_year = as.character(year(collected_date_dd_mm_yy)),
          collection_month = month(collected_date_dd_mm_yy, label = TRUE),
          collection_week = week(collected_date_dd_mm_yy),
-         collection_day = day(collected_date_dd_mm_yy))
+         collection_day = day(collected_date_dd_mm_yy),
+         pcr_result = case_when(
+           pcr_result == "equivocal" ~ "Equivocal",
+           TRUE ~ pcr_result)
+         )
 
 dengue_dta_with_na(data)
 
