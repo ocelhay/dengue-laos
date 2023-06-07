@@ -27,8 +27,8 @@ lang <- data.frame(
 i18n <- Translator$new(translation_csvs_path = './www/translations/')
 i18n$set_translation_language('en')
 
-app_theme_en <- bslib::bs_theme(bootswatch = "flatly", version = 4)
-app_theme_la <- bslib::bs_theme(bootswatch = "flatly", version = 4, base_font = "Phetsarath OT")
+app_theme_en <- bslib::bs_theme(bootswatch = "flatly", version = 5)
+app_theme_la <- bslib::bs_theme(bootswatch = "flatly", version = 5, base_font = "Phetsarath OT")
 
 cols <- c('#92c5de', '#f4a582', '#ca0020')  # Confirmed / Presumptive / No evidence
 cols_nep <- c("#d9d9d9", "#a1d76a", "#e9a3c9") # pos / equivocal / neg
