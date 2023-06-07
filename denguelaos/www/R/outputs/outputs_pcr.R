@@ -36,9 +36,9 @@ output$table_patients_pcr <- renderTable({
   req(dengue_dta_filt())
   req(dengue_dta_filt() %>% nrow() >= 1)
   
-  dengue_dta_filt() %>%
-    filter(pcr_serortype_result %in% c("DENV-1", "DENV-2", "DENV-2/4", "DENV-3", "DENV-4")) %>%
-    pull(pcr_serortype_result) %>%
+  dengue_dta_filt() |> 
+    filter(stringr::str_detect(pcr_serortype_result, "DENV")) |> 
+    pull(pcr_serortype_result) |> 
     table_method_results()
 })
 
