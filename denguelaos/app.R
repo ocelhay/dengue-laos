@@ -268,14 +268,14 @@ server <- function(input, output, session) {
     
     # Language management ----
     observeEvent(input$selected_language, {
-        update_lang(session, input$selected_language)
-        
+      update_lang(input$selected_language, session)
+
         if (isTRUE(input$selected_language != "la"))  session$setCurrentTheme(app_theme_en)
         if (isTRUE(input$selected_language == "la"))  session$setCurrentTheme(app_theme_la)
     })
-    
+
     observeEvent(input$selected_language, {
-        update_lang(session, input$selected_language)
+        update_lang(input$selected_language, session)
     })
     
     observeEvent(input$file_excel, {
