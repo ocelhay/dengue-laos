@@ -4,20 +4,20 @@ output$diagram_algo <- renderGrViz({
   pcr_pos <- dengue_dta_filt() %>% filter(pcr_result == "Positive") %>% nrow()
   pcr_equ <- dengue_dta_filt() %>% filter(pcr_result == "Equivocal") %>% nrow()
   pcr_neg <- dengue_dta_filt() %>% filter(pcr_result == "Negative") %>% nrow()
-  pcr_nos <- dengue_dta_filt() %>% filter(pcr_result == "Unknown") %>% nrow()
-  pcr_nod <- dengue_dta_filt() %>% filter(pcr_result == "not done") %>% nrow()
+  pcr_nos <- dengue_dta_filt() %>% filter(pcr_result %in% c("Unknown", "No sample", "No Sample")) %>% nrow()
+  pcr_nod <- dengue_dta_filt() %>% filter(pcr_result %in% c("Not done", "Not Done")) %>% nrow()
   
   ns1_pos <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "Positive") %>% nrow()
   ns1_equ <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "Equivocal") %>% nrow()
   ns1_neg <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "Negative") %>% nrow()
-  ns1_nos <- dengue_dta_filt() %>% filter(elisa_ns1_test_result == "Unknown") %>% nrow()
-  ns1_nod <- dengue_dta_filt() %>% filter(elisa_ns1_test_result %in% c("Not done", "not done (PCR+)")) %>% nrow()
+  ns1_nos <- dengue_dta_filt() %>% filter(elisa_ns1_test_result %in% c("Unknown", "No sample", "No Sample")) %>% nrow()
+  ns1_nod <- dengue_dta_filt() %>% filter(elisa_ns1_test_result %in% c("Not done", "Not Done")) %>% nrow()
   
   igm_pos <- dengue_dta_filt() %>% filter(elisa_ig_m_test_result %in% c("Positive", "positive")) %>% nrow()
   igm_equ <- dengue_dta_filt() %>% filter(elisa_ig_m_test_result == "Equivocal") %>% nrow()
   igm_neg <- dengue_dta_filt() %>% filter(elisa_ig_m_test_result == "Negative") %>% nrow()
-  igm_nos <- dengue_dta_filt() %>% filter(elisa_ig_m_test_result == "Unknown") %>% nrow()
-  igm_nod <- dengue_dta_filt() %>% filter(elisa_ig_m_test_result %in% c("Not done", "not done (PCR+)", "not done (NS1+)")) %>% nrow()
+  igm_nos <- dengue_dta_filt() %>% filter(elisa_ig_m_test_result %in% c("Unknown", "No sample", "No Sample")) %>% nrow()
+  igm_nod <- dengue_dta_filt() %>% filter(elisa_ig_m_test_result %in% c("Not done", "Not Done")) %>% nrow()
 
   grViz(
     glue("
