@@ -1,9 +1,55 @@
 # Import data ----
-data <- try(read_xlsx(input$file_excel$datapath, sheet = "Data", na = c("Missing data", "missing data")))
-ward <- try(read_xlsx(input$file_excel$datapath, sheet = "ward list"))
-village_code <- try(read_xlsx(input$file_excel$datapath, sheet = "village code"))
-district_code <- try(read_xlsx(input$file_excel$datapath, sheet = "disctrict code"))
-province_code <- try(read_xlsx(input$file_excel$datapath, sheet = "province code"))
+excel_files <- input$files_excel$datapath
+
+data <- try(
+  purrr::map(
+    excel_files,
+    read_xlsx,
+    sheet = "Data",
+    na = c("Missing data", "missing data")
+  ) |> 
+    purrr::list_rbind()
+)
+
+ward <- try(
+  purrr::map(
+    excel_files,
+    read_xlsx,
+    sheet = "ward list"
+  ) |> 
+    purrr::list_rbind() |> 
+    dplyr::distinct(WARD, .keep_all = TRUE)
+)
+
+village_code <- try(
+  purrr::map(
+    excel_files,
+    read_xlsx,
+    sheet = "village code",
+  ) |> 
+    purrr::list_rbind() |> 
+    dplyr::distinct(VillageCode, .keep_all = TRUE)
+)
+
+district_code <- try(
+  purrr::map(
+    excel_files,
+    read_xlsx,
+    sheet = "disctrict code",
+  ) |> 
+    purrr::list_rbind() |> 
+    dplyr::distinct(DistrictCode, .keep_all = TRUE)
+)
+
+province_code <- try(
+  purrr::map(
+    excel_files,
+    read_xlsx,
+    sheet = "province code",
+  ) |> 
+    purrr::list_rbind() |> 
+    dplyr::distinct(Code, .keep_all = TRUE)
+)
 
 if (inherits(data, 'try-error')) {
   checklist_status$read_sheet_1 <- list(status = "ko", details = "Can't read the sheet 'Data'")
